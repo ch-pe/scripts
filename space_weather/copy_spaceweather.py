@@ -1,5 +1,6 @@
 import urllib.request
 import caldav
+import passwordsAndStuff.py
 
 # preparation - print to cmd or log to file
 logfile = ''#"spaceweatherToCalendar.log" # empty string for cmd printing
@@ -50,3 +51,14 @@ for day_index, day in enumerate(days):
     #end loop times
 #end loop days
 
+
+## calDav preparation
+url=passwordsAndStuff.calendarUrl()
+username=passwordsAndStuff.calendarUsername()
+password=passwordsAndStuff.calendarPassword()
+
+#get the calendar
+with caldav.DAVClient(url=url, username=username, password=password) as client:
+   cal = client.calendar(url=url)
+   the_same_calendar.events()
+# create events
