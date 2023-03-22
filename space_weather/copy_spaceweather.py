@@ -51,12 +51,6 @@ for day_index, day in enumerate(days):
     #end loop times
 #end loop days
 
-
-## calDav preparation
-url=passwordsAndStuff.calendarUrl()
-username=passwordsAndStuff.calendarUsername()
-password=passwordsAndStuff.calendarPassword()
-
 # function to create events
 def new_calendar_string(year, month, day, start_time, end_time, Kp_index):
     # I'm open for suggestions for better ways of doing this
@@ -76,8 +70,21 @@ def new_calendar_string(year, month, day, start_time, end_time, Kp_index):
 
     return(vevent)
 
+## calDav preparation
+url=passwordsAndStuff.calendarUrl()
+username=passwordsAndStuff.calendarUsername()
+password=passwordsAndStuff.calendarPassword()
+
 #get the calendar
 with caldav.DAVClient(url=url, username=username, password=password) as client:
     cal = client.calendar(url=url)
-    for row in entries:
-        cal.save_event(new_calendar_string(row[0], row[1], row[2], row[3], row[4], row[5]))
+    for [year,month,day,start_time, end_time,Kp_index] in entries:
+        cal.save_event(new_calendar_string(year,month,day,start_time, end_time,Kp_index))
+
+#get a second calendar for only the high values
+url=passwordsAndStuff.calendar2Url()
+with caldav.DAVClient(url=url, username=username, password=password) as client:
+    cal = client.calendar(url=url)
+    for [year,month,day,start_time, end_time,Kp_index] in entries:
+        if (float(Kp_index) >= 5):
+            cal.save_event(new_calendar_string(year,month,day,start_time, end_time,Kp_index))
