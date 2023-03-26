@@ -37,10 +37,16 @@ year = "2023"
 entries = []
 days = [table[0][1],table[0][3],table[0][5]]
 
+# offsets
+# a line can be "15-18UT       4.67 (G1)    2.00         2.33"
+# and then the 2.00 and 2.33 are one index shifted. This keeps track:
+offsets = [0,0,0,0,0,0,0,0]
+
 for day_index, day in enumerate(days):
     month = str(months.index(table[0][day_index*2]) + 1).rjust(2,"0")
     for time_index in range(8):
-        Kp_index = table[time_index + 1][day_index + 1]
+        Kp_index = table[time_index + 1 + offsets[time_index]][day_index + 1]
+        offsets[time_index] += (float(Kp_index)>4)
         start_time = str(time_index * 3).rjust(2,"0")
         end_time = str((time_index + 1) * 3 - 1).rjust(2,"0") # idea is to go up to 2:59
         log("On "+year+"-"+month+"-"+day+", between " +
