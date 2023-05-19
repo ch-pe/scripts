@@ -28,25 +28,26 @@ log(answer)
 
 tableBlock = answer.split("\\n\\n")[3]
 #print (tableBlock)
-table = [i.split() for i in tableBlock.split('\\n')]
+tableLines = tableBlock.split('\\n')
 
 #todo: will need to change this at some point *shrug*
 year = "2023"
 
 # loop over days
 entries = []
-days = [table[0][1],table[0][3],table[0][5]]
+days = [tableLines[0][17:19],tableLines[0][30:32],tableLines[0][43:45]]
 
 # offsets
 # a line can be "15-18UT       4.67 (G1)    2.00         2.33"
 # and then the 2.00 and 2.33 are one index shifted. This keeps track:
+monthIndexes = [13,26,39]
+KpIndexes = [14,27,40]
 offsets = [0,0,0,0,0,0,0,0]
 
 for day_index, day in enumerate(days):
-    month = str(months.index(table[0][day_index*2]) + 1).rjust(2,"0")
+    month = str(months.index(tableLines[0][monthIndexes[day_index]:monthIndexes[day_index]+3]) + 1).rjust(2,"0")
     for time_index in range(8):
-        Kp_index = table[time_index + 1 + offsets[time_index]][day_index + 1]
-        offsets[time_index] += (float(Kp_index)>4)
+        Kp_index = tableLines[time_index + 1][KpIndexes[day_index]:KpIndexes[day_index]+4]
         start_time = str(time_index * 3).rjust(2,"0")
         end_time = str((time_index + 1) * 3 - 1).rjust(2,"0") # idea is to go up to 2:59
         log("On "+year+"-"+month+"-"+day+", between " +
